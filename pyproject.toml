@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "turing-challenge-assignment"
+version = "0.1.0"
+description = "turing challenge assignment"
+authors = ["Salvador Moreno Gutiérrez <smoreno94@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "^1.0.0"
+langchain = "^0.1.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
