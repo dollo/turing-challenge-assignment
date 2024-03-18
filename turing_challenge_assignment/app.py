@@ -11,8 +11,8 @@ dotenv_loaded = load_dotenv()
 logger.info(f"dotenv_loaded: {dotenv_loaded}")
 
 
-from turing_challenge_assignment.modules.chat import dummy_response
+from turing_challenge_assignment.modules.chat import chat_response
 
 
 # Gradio
-gr.ChatInterface(dummy_response).launch()
+gr.ChatInterface(chat_response).launch()
