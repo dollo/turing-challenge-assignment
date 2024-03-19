@@ -5,6 +5,16 @@ Este reto está orientado a resolver, de una forma aproximada, un proyecto simil
 
 El reto estará compuesto de 3 apartados. Un apartado técnico, un apartado teórico y un apartado opcional.
 
+## Código
+Requisitos:
+- **Python >= 3.10**
+- Instalar dependencias de entorno virtual utilizando poetry o el fichero `requirements.txt`.
+
+La app en gradio se puede ejectuar así desde el directorio raíz:
+
+```bash
+python turing_challenge_assignment/app.py
+```
 
 ## Apartado 1
 El objetivo del apartado técnico es valorar la capacidad de buscar una solución a un problema en un tiempo limitado y que ésta de la salida especificada. No se plantea evaluar que la solución sea optima en ninguna métrica, es decir, ni tiempo de ejecución, ni precisión de la inferencia.
