@@ -12,8 +12,14 @@ langchain = "^0.1.12"
 gradio = "^4.21.0"
 openai = "^1.14.1"
 langchain-openai = "^0.0.8"
+chromadb = "^0.4.24"
+langchain-community = "^0.0.28"
+pypdf = "^4.1.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
