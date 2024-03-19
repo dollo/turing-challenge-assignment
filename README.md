@@ -23,10 +23,57 @@ El objetivo del apartado teórico es realizar un pequeño guion de los pasos nec
 
 Apartado 2:  Dar respuesta a los siguientes puntos de forma teórica, sin necesidad de desarrollarlos, que guardan relación con las tecnologías utilizadas en el primer apartado:
 
-    Diferencias entre 'completion' y 'chat' models
-    ¿Cómo forzar a que el chatbot responda 'si' o 'no'?¿Cómo parsear la salida para que siga un formato determinado?
-    Ventajas e inconvenientes de RAG vs fine-tunning
-    ¿Cómo evaluar el desempaño de un bot de Q&A? ¿Cómo evaluar el desempeño de un RAG?
+### Diferencias entre 'completion' y 'chat' models:
+Los modelos completion son útiles en tareas específcias, como hacer resúmenes, traducir idiomas, etc. Modelos tipo instruct como gpt-3.5-turbo-instruct están dentro de esta categoría.
+
+Por otro lado, los modelos tipo chat están mejor preparados para conversación, es decir: conversaciones con varios turnos sistema-humano y refererirse a un histórico de la conversación.
+
+
+### ¿Cómo forzar a que el chatbot responda 'si' o 'no'?¿Cómo parsear la salida para que siga un formato determinado?
+
+- Opción 1: Prompting. Podemos darle en el prompt las instrucciones sobre las que queremos que procese determinado input y nos devuelva una salida binaria sí/no (por ejemplo, chain of thought y/o few-shot). Es conveniente ajustar la temperatura a 0 para evitar la mayor cantidad de ruido posible.
+- Opción 2: Fine-tuning. Si tenemos una batería de ejemplos sobre la que sabemos cómo queremos que conteste nuestro LLM (es decir, en las que las contestaciones sean sí o no), podemos hacer run fine-tuning orientado a esa respuesta binaria. Con esta solución reducimos el número de tokens procesados en cada inferencia.
+- Opción 3: Modificar logits. Ajustar las probabilidades de respuesta del modelo dando prioridad a los únicos tokens de salida que queremos que utilice: sí/no. Para ello hay que identificar los logits que le corresponden, darles mayor peso, y normalizar probabilidades (softmax).
+
+### Ventajas e inconvenientes de RAG vs fine-tunning
+
+**RAG (Retrieval Augmented Generation)** ofrece las siguientes ventajas y desventajas:
+- **Ventajas**:
+    - Alta adaptabilidad a dominio: podemos hacer un sistema muy
+    - Control de las fuentes: sabemos cuáles son las fuentes de verdad sobre las que queremos generar respuestas.
+    - Alta especificidad de las respuestas: datos muy concretos alojados en SQL o Excels pueden ser directamente accesibles y generar respuesta con ellos
+
+- **Desventajas**:
+    - Alta complejidad del sistema: cada dominio requiere de un ajuste fino del sistema, y la cadena de elementos que lo componen no es trivial:
+        - Reformulador de queries: por ejemplo, subquery decomposition, step-back prompting.
+        - Procesado de documentos: uso de embeddings adecuado (incluso hacer un fine-tuning), optimizar tamaño de fragmentos y solapamiento en base de datos de vectores.
+        - Funciones de búsqueda en base de datos vectorial y otros recursos: contar con descripciones adecuadas de los recursos para poder acceder a ellas en varios niveles, no solamente por similitud coseno a fragmentos.
+        - Generación de respuesta: influida por ténicas como el re-ranking, map-reduce
+        - Prompting adecuado para cada una de las etapas/modelos utilizados
+        - Manejo del contexto: problemas de tamaño en el contexto, needle-in-a-haystack...
+    - Tiempo y coste: esta alta complejidad de elementos, muchos de ellos dependientes de llamdas a LLMs, hacen del sistema y costoso en términos de tiempo y dinero a nivel de inferencia total.
+
+**Fine-tuning** tiene diversas ventajas y desventajas:
+- **Ventajas**
+    - Alta adaptabilidad a tarea: El fine-tuning nos permite adaptar el modelo a un tipo de interacción concreta, asociada quizás a alguna jerga (como la legal) o a algún dominio de conocimiento. Sin embargo, no debe confundirse con la introducción de conocimientos específicos.
+    - Bajo control de las fuentes de verdad: por mucha información que haya en el fine-tuning, no podemos evitar que el modelo hile alucine, hilando hechos o conceptos que no tienen por qué ir juntos.
+    - Baja especificidad: la generación de respuestas está más orientada en forma que en fondo.
+- **Desventajas**:
+    - Alto coste de entrenamiento (incluso de inferencia, aunque sea un modelo de OpenAI)
+    - Necesita elaborar un dataset que refleje que permita el fine-tuning.
+
+### ¿Cómo evaluar el desempaño de un bot de Q&A? ¿Cómo evaluar el desempeño de un RAG?
+
+Un bot de Q&A va a tener que dar respuestas correctas a determinadas preguntas. Existen muchas métricas que permiten evaluar el acierto de un sistema a la hora de generar respuestas.
+
+Respecto al **acierto del sistema**, tenemos métricas clásicas como accuracy, f1-score... Esta clasificación de respuesta requiere normalmente de validación manual o de llamadas a otro LLM que compare si la respuesta es correcta teniendo la respuesta correcta al lado para comparar.
+
+También tenemos otras métricas que mejoran la **descripción de esa generación de respuesta**, añadiendo tintes cualitativos: perpejidad (perplexity), ROUGUE, similitud semántica basada en embeddings...
+
+Si queremos evaluar el RAG directamente, aquí tenemos medidas que incluyen el contexto dentro de la evaluación, como faithfulness, answer relevancy, context precision y context recall. Hay muchas más, con herramientas (RAGAS) y artículos científicos (Compex QA Survey de Daull y cols. en 2023) dedicados específicamente a ello, refiriendo no solo sino benchmarks como NaturalQA, SQUAD, etc.
+
+También tenemos otras medidas relacionadas con la **seguridad** (toxicidad, representación demográfica, sesgos... El paper de llama2 los describe en detalle), la **usabilidad** (tiempo de respuesta) y **satisfacción** subjetiva del usuario.
+
 
 ## Apartado 3
 El objetivo del apartado opcional es simplemente una oportunidad para demostrar el conocimiento en otras tecnologías relevantes.
